@@ -1,0 +1,111 @@
+<!-- wp:paragraph -->
+<p>In this post, I am going to download and analyze the tweets regarding Elon Musk from the last two weeks and perform sentiment analysis to gather market intelligence. What are people's opinions about Elon Musk?</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"textColor":"secondary"} -->
+<h2 class="has-secondary-color has-text-color" id="what-is-sentiment-analysis">What is Sentiment Analysis?</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>To do this, I will need to use Natural Language Processing as a way to gain insights into my data. One of the most common forms of analysis we can exploit using NLP is called sentiment analysis, and it consists of converting a text into a score that estimates its sentiment. There are several models we can use to perform sentiment analysis, but they all fulfill the same purpose.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>The most common use case of sentiment analysis is to estimate the demand of the market for a certain product, hopefully entering into a trend just when it begins. In Finance, this is one of the most searched ML applications.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>The project will be following these steps:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:list {"ordered":true} -->
+<ol><li>Download data from Twitter</li><li>Preprocess the data</li><li>Install sentiment analysis model</li><li>Analyze results</li></ol>
+<!-- /wp:list -->
+
+<!-- wp:heading {"textColor":"secondary"} -->
+<h2 class="has-secondary-color has-text-color" id="1-download-data-from-twitter">1. Download data from Twitter</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>To download data from Twitter without using its metered API, hence without any limit on the volume of data I wish to scrape, I can use different libraries. One of the most common is called <strong>twint</strong>, however, after the latest Twitter updates, has not been working very well. </p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>As a valid and also simpler alternative, I will be using <strong>snscrape</strong>. </p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code {"backgroundColor":"primary"} -->
+<pre class="wp-block-code has-primary-background-color has-background"><code>!pip install snscrape</code></pre>
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+<p>After installing the library with pip, I will need to declare which are the search parameters. Because I may need to use it on more queries, for example, I could search for the sentiment on the top 10 Billionaires, I want to be able to have a control panel that gives instruction to the program. </p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>As such, I will use movie_dict as a variable to store all the instructions to perform multiple searches. For each search, a csv will be created with all the data I have been able to scrape from Twitter:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code {"backgroundColor":"primary"} -->
+<pre class="wp-block-code has-primary-background-color has-background"><code>import snscrape.modules.twitter as sntwitter
+import pandas as pd
+import progressbar
+from time import sleep
+from datetime import datetime
+import os
+
+{'elon_musk': &#91;'elon musk since:2022-01-01 until:2022-01-17', 100], 'vaccine': &#91;'covid vaccine since:2022-01-01 until:2022-01-17', 100]}
+</code></pre>
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+<p>The following is the code that executes the scrape:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code {"backgroundColor":"primary"} -->
+<pre class="wp-block-code has-primary-background-color has-background"><code>today = datetime.today().strftime('%Y%m%d')&#91;2:]+'_'
+for index, movie_name in enumerate(movie_dict):
+    print(movie_name, '%')
+    tweets_list1 = &#91;]
+    bar = progressbar.ProgressBar(maxval=movie_dict&#91;movie_name]&#91;1]+2, widgets=&#91;progressbar.Bar('=', '&#91;', ']'), ' ', progressbar.Percentage()])
+    bar.start()
+    for i,tweet in enumerate(sntwitter.TwitterSearchScraper(f'{movie_dict&#91;movie_name]&#91;0]}').get_items()): #declare a username
+        bar.update(i+1)
+        if i&gt;movie_dict&#91;movie_name]&#91;1]: #number of tweets you want to scrape
+            break
+        #print(movie_name, i, tweet)
+        tweets_list1.append(&#91;tweet.date, tweet.id, tweet.content, tweet.user.username]) #declare the attributes to be returned
+    tweets_df1 = pd.DataFrame(tweets_list1, columns=&#91;'Datetime', 'Tweet Id', 'Text', 'Username'])
+
+    tweets_df1&#91;&#91;'Datetime', 'Text']].to_csv(f'{index}.csv')
+    bar.finish()</code></pre>
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+<p>This code is an improved version of the <a href="https://medium.com/dataseries/how-to-scrape-millions-of-tweets-using-snscrape-195ee3594721">standard code used to run a query</a> to filter the tweets you wish to download from Twitter. You can use it to download not only one query, but a list of query</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"textColor":"secondary"} -->
+<h2 class="has-secondary-color has-text-color" id="2-preprocess-the-data">2. Preprocess the data</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Now that a csv file has been created for every query in my control panel, let us look at the raw data of a single query:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code {"backgroundColor":"primary"} -->
+<pre class="wp-block-code has-primary-background-color has-background"><code>import pandas as pd
+
+#when importing empty rows, they are transformed to nan, so we need to drop them here
+df = pd.read_csv('download/merged.csv')&#91;&#91;'text']]
+df = df.dropna().reset_index(drop=True)
+df</code></pre>
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+<p>Because some of the rows may be null when importing the dataset, I am dropping them and resetting the index. This is a screenshot of the dataframe before preprocessing:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"align":"center","width":480,"height":616,"sizeSlug":"large","className":"is-style-default"} -->
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-large is-resized"><img src="https://raw.githubusercontent.com/arditoibryan/pythonkai/main/_content/articles/220117_musk_tweet/df.png" alt="" width="480" height="616"/><figcaption>df raw</figcaption></figure></div>
+<!-- /wp:image -->
