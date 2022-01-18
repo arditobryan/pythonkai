@@ -19,7 +19,7 @@
 <!-- /wp:paragraph -->
 
 <!-- wp:list {"ordered":true} -->
-<ol><li>Download data from Twitter</li><li>Preprocess the data</li><li>Install sentiment analysis model</li><li>Analyze results</li></ol>
+<ol><li>Download data from Twitter</li><li>Preprocess the data</li><li>Perform sentiment analysis</li><li>Analyze results</li></ol>
 <!-- /wp:list -->
 
 <!-- wp:heading {"textColor":"secondary"} -->
@@ -54,7 +54,7 @@ from time import sleep
 from datetime import datetime
 import os
 
-{'elon_musk': &#91;'elon musk since:2022-01-01 until:2022-01-17', 100], 'vaccine': &#91;'covid vaccine since:2022-01-01 until:2022-01-17', 100]}
+{'elon_musk': ['elon musk since:2022-01-01 until:2022-01-17', 100], 'vaccine': ['covid vaccine since:2022-01-01 until:2022-01-17', 100]}
 </code></pre>
 <!-- /wp:code -->
 
@@ -98,14 +98,73 @@ for index, movie_name in enumerate(movie_dict):
 
 #when importing empty rows, they are transformed to nan, so we need to drop them here
 df = pd.read_csv('download/merged.csv')&#91;&#91;'text']]
-df = df.dropna().reset_index(drop=True)
 df</code></pre>
 <!-- /wp:code -->
 
 <!-- wp:paragraph -->
-<p>Because some of the rows may be null when importing the dataset, I am dropping them and resetting the index. This is a screenshot of the dataframe before preprocessing:</p>
+<p>Because some of the rows may be null when importing the dataset, I am dropping them and resetting the index. I am also going to apply a small preprocessing snippet. Preprocessing is a step that you can customize depending on your needs. In this case, because I only want to get rid of links and non-ascii characters, I am going to use the following two functions:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code {"backgroundColor":"primary"} -->
+<pre class="wp-block-code has-primary-background-color has-background"><code>#get rid of links and hashtags
+df&#91;"text"] = df&#91;"text"].apply(lambda x : ' '.join(&#91;s for s in x.split(' ') if s.find('@') == -1 and s.find('www') == -1 and s.find('https') == -1]))
+
+#get rid of non-ascii characters
+df = df.replace(r'\W+', ' ', regex=True)
+df</code></pre>
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+<p>This is a screenshot of the dataframe after preprocessing:</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:image {"align":"center","width":480,"height":616,"sizeSlug":"large","className":"is-style-default"} -->
-<div class="wp-block-image is-style-default"><figure class="aligncenter size-large is-resized"><img src="https://raw.githubusercontent.com/arditoibryan/pythonkai/main/_content/articles/220117_musk_tweet/df.png" alt="" width="480" height="616"/><figcaption>df raw</figcaption></figure></div>
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-large is-resized"><img src="https://raw.githubusercontent.com/arditoibryan/pythonkai/main/_content/articles/220117_musk_tweet/df.png" alt="" width="390" height="616"/><figcaption>df raw</figcaption></figure></div>
 <!-- /wp:image -->
+
+<!-- wp:heading {"textColor":"secondary"} -->
+<h2 class="has-secondary-color has-text-color" id="3-perform-sentiment-analysis">3. Perform sentiment analysis</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>I am now going to apply a sentiment analysis to our cleaned data. There is a myriad of sentiment analysis libraries you can use to perform the same task, from <strong>transformers</strong>, <strong>textblob</strong>, <strong>spacy</strong>. For this tutorial I am going to use the latest version of spacy, and its extension called <a href="https://spacy.io/universe/project/spacy-textblob" target="_blank" rel="noreferrer noopener">spacytextblob</a>.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>To install it, I will need to run the following commands and restart the notebook:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code {"backgroundColor":"primary"} -->
+<pre class="wp-block-code has-primary-background-color has-background"><code>!pip install spacytexblob==3.0.1
+!pip install spacy==3.2.1
+!python -m textblob.download_corpora
+!python -m spacy download en_core_web_sm</code></pre>
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+<p>Once the installation is complete, we can run the sentiment analysis and append the score to our dataframe:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code {"backgroundColor":"primary"} -->
+<pre class="wp-block-code has-primary-background-color has-background"><code>import spacy
+from spacytextblob.spacytextblob import SpacyTextBlob
+
+nlp = spacy.load('en_core_web_sm')
+nlp.add_pipe("spacytextblob")
+
+df&#91;'sentiment'] = df&#91;'text'].apply(lambda x : nlp(x)._.polarity)
+df_sentiment = df.sort_values('sentiment').reset_index(drop=True)
+df_sentiment</code></pre>
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+<p>As we can see, this is the final result:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"align":"center","width":480,"height":616,"sizeSlug":"large","className":"is-style-default"} -->
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-large is-resized"><img src="https://raw.githubusercontent.com/arditoibryan/pythonkai/main/_content/articles/220117_musk_tweet/df_sentiment.png" alt="" width="480" height="616"/><figcaption>sentiment</figcaption></figure></div>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+<p>I decided to sort the values from the most negative, so that we could see some of the most shocking comments regarding Elon Musk.</p>
+<!-- /wp:paragraph -->
