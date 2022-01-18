@@ -1,0 +1,170 @@
+<!-- wp:paragraph -->
+<p>In this post, I am going to download and analyze the tweets regarding Bitcoin tweets from the last two weeks and perform sentiment analysis to gather market intelligence. What are people's opinions about Bitcoin tweets?</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"textColor":"secondary"} -->
+<h2 class="has-secondary-color has-text-color" id="what-is-sentiment-analysis">What is Sentiment Analysis?</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>To do this, I will need to use Natural Language Processing as a way to gain insights into my data. One of the most common forms of analysis we can exploit using NLP is called sentiment analysis, and it consists of converting a text into a score that estimates its sentiment. There are several models we can use to perform sentiment analysis, but they all fulfill the same purpose.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>The most common use case of sentiment analysis is to estimate the demand of the market for a certain product, hopefully entering into a trend just when it begins. In Finance, this is one of the most searched ML applications.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>The project will be following these steps:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:list {"ordered":true} -->
+<ol><li>Download data from Twitter</li><li>Preprocess the data</li><li>Perform sentiment analysis</li><li>Analyze results</li></ol>
+<!-- /wp:list -->
+
+<!-- wp:heading {"textColor":"secondary"} -->
+<h2 class="has-secondary-color has-text-color" id="1-download-data-from-twitter">1. Download data from Twitter</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>To download data from Twitter without using its metered API, hence without any limit on the volume of data I wish to scrape, I can use different libraries. One of the most common is called <strong>twint</strong>, however, after the latest Twitter updates, has not been working very well. </p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>As a valid and also simpler alternative, I will be using <strong>snscrape</strong>. </p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code {"backgroundColor":"primary"} -->
+<pre class="wp-block-code has-primary-background-color has-background"><code>!pip install snscrape</code></pre>
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+<p>After installing the library with pip, I will need to declare which are the search parameters. Because I may need to use it on more queries, for example, I could search for the sentiment on the top 10 Billionaires, I want to be able to have a control panel that gives instruction to the program. </p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>As such, I will use movie_dict as a variable to store all the instructions to perform multiple searches. For each search, a csv will be created with all the data I have been able to scrape from Twitter:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code {"backgroundColor":"primary"} -->
+<pre class="wp-block-code has-primary-background-color has-background"><code>import snscrape.modules.twitter as sntwitter
+import pandas as pd
+import progressbar
+from time import sleep
+from datetime import datetime
+import os
+
+{'bitcoin': ['bitcoin since:2022-01-01 until:2022-01-17', 1000]}
+</code></pre>
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+<p>The following is the code that executes the scrape:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code {"backgroundColor":"primary"} -->
+<pre class="wp-block-code has-primary-background-color has-background"><code>today = datetime.today().strftime('%Y%m%d')&#91;2:]+'_'
+for index, movie_name in enumerate(movie_dict):
+    print(movie_name, '%')
+    tweets_list1 = &#91;]
+    bar = progressbar.ProgressBar(maxval=movie_dict&#91;movie_name]&#91;1]+2, widgets=&#91;progressbar.Bar('=', '&#91;', ']'), ' ', progressbar.Percentage()])
+    bar.start()
+    for i,tweet in enumerate(sntwitter.TwitterSearchScraper(f'{movie_dict&#91;movie_name]&#91;0]}').get_items()): #declare a username
+        bar.update(i+1)
+        if i&gt;movie_dict&#91;movie_name]&#91;1]: #number of tweets you want to scrape
+            break
+        #print(movie_name, i, tweet)
+        tweets_list1.append(&#91;tweet.date, tweet.id, tweet.content, tweet.user.username]) #declare the attributes to be returned
+    tweets_df1 = pd.DataFrame(tweets_list1, columns=&#91;'Datetime', 'Tweet Id', 'Text', 'Username'])
+
+    tweets_df1&#91;&#91;'Datetime', 'Text']].to_csv(f'{index}.csv')
+    bar.finish()</code></pre>
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+<p>This code is an improved version of the <a href="https://medium.com/dataseries/how-to-scrape-millions-of-tweets-using-snscrape-195ee3594721">standard code used to run a query</a> to filter the tweets you wish to download from Twitter. You can use it to download not only one query, but a list of query</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"textColor":"secondary"} -->
+<h2 class="has-secondary-color has-text-color" id="2-preprocess-the-data">2. Preprocess the data</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Now that a csv file has been created for every query in my control panel, let us look at the raw data of a single query:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code {"backgroundColor":"primary"} -->
+<pre class="wp-block-code has-primary-background-color has-background"><code>import pandas as pd
+
+#when importing empty rows, they are transformed to nan, so we need to drop them here
+df = pd.read_csv('download/merged.csv')&#91;&#91;'text']]
+df</code></pre>
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+<p>Because some of the rows may be null when importing the dataset, I am dropping them and resetting the index. I am also going to apply a small preprocessing snippet. Preprocessing is a step that you can customize depending on your needs. In this case, because I only want to get rid of links and non-ascii characters, I am going to use the following two functions:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code {"backgroundColor":"primary"} -->
+<pre class="wp-block-code has-primary-background-color has-background"><code>#get rid of links and hashtags
+df&#91;"text"] = df&#91;"text"].apply(lambda x : ' '.join(&#91;s for s in x.split(' ') if s.find('@') == -1 and s.find('www') == -1 and s.find('https') == -1]))
+
+#get rid of non-ascii characters
+df = df.replace(r'\W+', ' ', regex=True)
+df</code></pre>
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+<p>This is a screenshot of the dataframe after preprocessing:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"align":"center","width":480,"height":616,"sizeSlug":"large","className":"is-style-default"} -->
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-large is-resized"><img src="https://raw.githubusercontent.com/arditoibryan/pythonkai/main/_content/articles/220118_bitcoin_tweet/df.png" alt="" width="390" height="616"/><figcaption>df raw</figcaption></figure></div>
+<!-- /wp:image -->
+
+<!-- wp:heading {"textColor":"secondary"} -->
+<h2 class="has-secondary-color has-text-color" id="3-perform-sentiment-analysis">3. Perform sentiment analysis</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>I am now going to apply a sentiment analysis to our cleaned data. There is a myriad of sentiment analysis libraries you can use to perform the same task, from <strong>transformers</strong>, <strong>textblob</strong>, <strong>spacy</strong>. For this tutorial I am going to use the latest version of spacy, and its extension called <a href="https://spacy.io/universe/project/spacy-textblob" target="_blank" rel="noreferrer noopener">spacytextblob</a>.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>To install it, I will need to run the following commands and restart the notebook:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code {"backgroundColor":"primary"} -->
+<pre class="wp-block-code has-primary-background-color has-background"><code>!pip install spacytexblob==3.0.1
+!pip install spacy==3.2.1
+!python -m textblob.download_corpora
+!python -m spacy download en_core_web_sm</code></pre>
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+<p>Once the installation is complete, we can run the sentiment analysis and append the score to our dataframe:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code {"backgroundColor":"primary"} -->
+<pre class="wp-block-code has-primary-background-color has-background"><code>import spacy
+from spacytextblob.spacytextblob import SpacyTextBlob
+
+nlp = spacy.load('en_core_web_sm')
+nlp.add_pipe("spacytextblob")
+
+df&#91;'sentiment'] = df&#91;'text'].apply(lambda x : nlp(x)._.polarity)
+df_sentiment = df.sort_values('sentiment').reset_index(drop=True)
+df_sentiment</code></pre>
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+<p>As we can see, this is the final result:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"align":"center","width":480,"height":616,"sizeSlug":"large","className":"is-style-default"} -->
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-large is-resized"><img src="https://raw.githubusercontent.com/arditoibryan/pythonkai/main/_content/articles/220118_bitcoin_tweet/df_sentiment.png" alt="" width="480" height="616"/><figcaption>sentiment</figcaption></figure></div>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+<p>I decided to sort the values from the most negative, so that we could see some of the most shocking comments regarding Bitcoin tweets.</p>
+<!-- /wp:paragraph -->
