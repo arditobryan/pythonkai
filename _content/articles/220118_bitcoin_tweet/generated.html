@@ -38,7 +38,7 @@ from time import sleep
 from datetime import datetime
 import os
 
-movie_dict = {'bitcoin': ['bitcoin since:2022-01-01 until:2022-01-17', 1000]}
+movie_dict = {'bitcoin': ['bitcoin since:2022-01-01 until:2022-01-17', 50000]}
 </code></pre>
 <!-- /wp:code -->
 
@@ -219,8 +219,8 @@ df_pos = df_sentiment&#91;df_sentiment&#91;'sentiment'] &gt; 0]
 <pre class="wp-block-code has-background-color has-primary-background-color has-text-color has-background"><code>print(len(df_neg))
 print(len(df_pos))
 \
-122
-353
+5283
+16407
 </code></pre>
 <!-- /wp:code -->
 
@@ -235,13 +235,13 @@ negative_words = pd.DataFrame(&#91;dict(Counter(' '.join(df_neg&#91;'text'].valu
 <p>These are the most common words found in the positive tweets:</p>
 
 <!-- wp:code {"backgroundColor":"primary"} -->
-<pre class="wp-block-code has-primary-background-color has-background"><code>['bitcoin', 'btc', 'crypto', 'price', 'block', 'cryptocurrency', 'get', 'new', 'would', 'first', 'like', 'high', 'time', 'market', 'ethereum', 'gold', 'year', 'sign', 'eth', 'usd', 'blockchain', 'one', 'free', 'money', 'better', 'right', 'asia', 'amid', 'continues', 'need', 'tweet', 'mover', 'sluggishness', 'buy', 'darkening', 'people', 'economic', 'amp', 'still', 'know', 'real', 'also', 'week', 'top', 'change', 'good', 'transaction', 'day', 'love', 'last', 'hit', 'make', 'many', 'even', 'much', 'start', 'network', 'help', 'via', 'coin', 'nft', 'say', 'reward', 'asset', 'world', 'investment', 'lol', 'sure', 'early', 'thing', 'great', 'tell', 'see', 'latest', 'going', 'earn', 'system', 'best', 'exchange', 'well', 'value', 'believe', 'analysis', 'want', 'used', 'understand', 'low', 'look', 'lot', 'cardano', 'total', 'find', 'node', 'keep', 'miner', 'found', 'think', 'mining', 'xrp', 'max']</code></pre>
+<pre class="wp-block-code has-primary-background-color has-background"><code>['bitcoin', 'btc', 'crypto', 'price', 'block', 'cryptocurrency', 'time', 'get', 'new', 'like', 'market', 'buy', 'people', 'money', 'one', 'ethereum', 'year', 'would', 'good', 'eth', 'make', 'first', 'amp', 'free', 'transaction', 'usd', 'right', 'real', 'blockchain', 'know', 'binance', 'coin', 'think', 'high', 'top', 'worth', 'social', 'mining', 'see', 'need', 'world', 'better', 'last', 'nft', 'much', 'still', 'want', 'great', 'reward', 'network', 'going', 'many', 'best', 'latest', 'say', 'day', 'way', 'take', 'could', 'also', 'news', 'use', 'sat', 'trend', 'value', 'total', 'back', 'hold', 'project', 'week', 'thing', 'via', 'love', 'even', 'future', 'byte', 'low', 'hour', 'mine', 'current', 'dollar', 'change', 'currency', 'really', 'energy', 'trading', 'today', 'analysis', 'gold', 'investment', 'invest', 'nfts', 'earn', 'fee', 'hit', 'lol', 'work', 'sure', 'found', 'country']</code></pre>
 <!-- /wp:code -->
 
 <p>These, instead, are the most common words found in the negative tweets:</p>
 
 <!-- wp:code {"backgroundColor":"primary"} -->
-<pre class="wp-block-code has-primary-background-color has-background"><code>['bitcoin', 'crypto', 'price', 'btc', 'nfts', 'ethereum', 'big', 'week', 'hit', 'bnb', 'swing', 'extreme', 'braced', 'cardano', 'solana', 'xrp', 'buy', 'get', 'think', 'like', 'usdt', 'nft', 'going', 'one', 'would', 'time', 'amp', 'long', 'thing', 'cryptocurrency', 'want', 'lot', 'money', 'world', 'see', 'exchange', 'people', 'bad', 'cryptonews', 'line', 'right', 'new', 'nothing', 'le', 'hour', 'fed', 'sat', 'look', 'miner', 'anything', 'mean', 'use', 'rate', 'forbes', 'change', 'mining', 'supply', 'chart', 'buying', 'medium', 'need', 'early', 'worst', 'value', 'billion', 'give', 'still', 'someone', 'know', 'around', 'find', 'make', 'ever', 'fiat', 'back', 'getting', 'wallet', 'network', 'chain', 'bottom', 'last', 'since', 'said', 'coin', 'red', 'twitter', 'attack', 'foo', 'missing', 'hard', 'matter', 'cryptocurrencies', 'today', 'min', 'side', 'started', 'beginning', 'imagine', 'blockchain', 'fee']</code></pre>
+<pre class="wp-block-code has-primary-background-color has-background"><code>['bitcoin', 'btc', 'crypto', 'price', 'like', 'ethereum', 'people', 'money', 'market', 'buy', 'long', 'would', 'one', 'time', 'get', 'cryptocurrency', 'year', 'usdt', 'eth', 'think', 'amp', 'going', 'game', 'coin', 'make', 'need', 'still', 'know', 'say', 'could', 'day', 'last', 'value', 'change', 'mean', 'see', 'want', 'ripple', 'xrp', 'world', 'thing', 'even', 'bad', 'blockchain', 'week', 'also', 'look', 'shit', 'sat', 'use', 'block', 'way', 'mining', 'every', 'usd', 'fee', 'hard', 'current', 'energy', 'wrong', 'hour', 'past', 'next', 'nft', 'government', 'nfts', 'currency', 'le', 'take', 'fiat', 'back', 'fuck', 'average', 'term', 'investment', 'transaction', 'never', 'month', 'gold', 'new', 'slow', 'system', 'exchange', 'chart', 'short', 'rate', 'small', 'future', 'start', 'work', 'binance', 'via', 'cardano', 'sell', 'extreme', 'big', 'trading', 'support', 'network', 'dollar']</code></pre>
 <!-- /wp:code -->
 
 <!-- wp:heading {"textColor":"secondary"} -->
