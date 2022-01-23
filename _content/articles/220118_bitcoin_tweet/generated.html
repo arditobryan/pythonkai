@@ -93,7 +93,7 @@ df</code></pre>
 <p>This is a screenshot of the dataframe after preprocessing:</p>
 
 <!-- wp:image {"align":"center","width":480,"height":616,"sizeSlug":"large","className":"is-style-default"} -->
-<div class="wp-block-image is-style-default"><figure class="aligncenter size-large is-resized"><img src=@@@df alt="" width="390" height="616"/><figcaption>@@@df_caption</figcaption></figure></div>
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-large is-resized"><img src=https://raw.githubusercontent.com/arditoibryan/pythonkai/main/_content/articles/220118_bitcoin_tweet/df.png alt="" width="390" height="616"/><figcaption>raw data sample</figcaption></figure></div>
 <!-- /wp:image -->
 
 <!-- wp:heading {"textColor":"secondary"} -->
@@ -128,7 +128,7 @@ df_sentiment</code></pre>
 <p>As we can see, this is the final result:</p>
 
 <!-- wp:image {"align":"center","width":480,"height":616,"sizeSlug":"large","className":"is-style-default"} -->
-<div class="wp-block-image is-style-default"><figure class="aligncenter size-large is-resized"><img src=@@@df_sentiment alt="" width="480" height="616"/><figcaption>_</figcaption></figure></div>
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-large is-resized"><img src=https://raw.githubusercontent.com/arditoibryan/pythonkai/main/_content/articles/220118_bitcoin_tweet/df_sentiment.png alt="" width="480" height="616"/><figcaption>sample of the sentiment analyis</figcaption></figure></div>
 <!-- /wp:image -->
 
 <p>I decided to sort the values from the most negative, so that we could see some of the most shocking comments regarding Bitcoin tweets.</p>
@@ -202,7 +202,7 @@ df_sentiment</code></pre>
 <!-- /wp:code -->
 
 <!-- wp:image {"align":"center","width":480,"height":616,"sizeSlug":"large","className":"is-style-default"} -->
-<div class="wp-block-image is-style-default"><figure class="aligncenter size-large is-resized"><img src=@@@df_sentiment_preprocessed alt="" width="480" height="616"/><figcaption>_</figcaption></figure></div>
+<div class="wp-block-image is-style-default"><figure class="aligncenter size-large is-resized"><img src=https://raw.githubusercontent.com/arditoibryan/pythonkai/main/_content/articles/220118_bitcoin_tweet/df_sentiment_preprocessed.png alt="" width="480" height="616"/><figcaption>sample of preprocessed data</figcaption></figure></div>
 <!-- /wp:image -->
 
 <p>There are several ways we can analyze the results from the sentiment analysis. One common practice is to separate the samples with negative sentiment from the ones with a positive sentiment and extract what are the most common words. </p>
@@ -219,8 +219,8 @@ df_pos = df_sentiment&#91;df_sentiment&#91;'sentiment'] &gt; 0]
 <pre class="wp-block-code has-background-color has-primary-background-color has-text-color has-background"><code>print(len(df_neg))
 print(len(df_pos))
 \
-@@@len_df_neg
-@@@len_df_pos
+122
+353
 </code></pre>
 <!-- /wp:code -->
 
@@ -235,17 +235,17 @@ negative_words = pd.DataFrame(&#91;dict(Counter(' '.join(df_neg&#91;'text'].valu
 <p>These are the most common words found in the positive tweets:</p>
 
 <!-- wp:code {"backgroundColor":"primary"} -->
-<pre class="wp-block-code has-primary-background-color has-background"><code>@@@positive_words</code></pre>
+<pre class="wp-block-code has-primary-background-color has-background"><code>['bitcoin', 'btc', 'crypto', 'price', 'block', 'cryptocurrency', 'get', 'new', 'would', 'first', 'like', 'high', 'time', 'market', 'ethereum', 'gold', 'year', 'sign', 'eth', 'usd', 'blockchain', 'one', 'free', 'money', 'better', 'right', 'asia', 'amid', 'continues', 'need', 'tweet', 'mover', 'sluggishness', 'buy', 'darkening', 'people', 'economic', 'amp', 'still', 'know', 'real', 'also', 'week', 'top', 'change', 'good', 'transaction', 'day', 'love', 'last', 'hit', 'make', 'many', 'even', 'much', 'start', 'network', 'help', 'via', 'coin', 'nft', 'say', 'reward', 'asset', 'world', 'investment', 'lol', 'sure', 'early', 'thing', 'great', 'tell', 'see', 'latest', 'going', 'earn', 'system', 'best', 'exchange', 'well', 'value', 'believe', 'analysis', 'want', 'used', 'understand', 'low', 'look', 'lot', 'cardano', 'total', 'find', 'node', 'keep', 'miner', 'found', 'think', 'mining', 'xrp', 'max']</code></pre>
 <!-- /wp:code -->
 
 <p>These, instead, are the most common words found in the negative tweets:</p>
 
 <!-- wp:code {"backgroundColor":"primary"} -->
-<pre class="wp-block-code has-primary-background-color has-background"><code>@@@negative_words</code></pre>
+<pre class="wp-block-code has-primary-background-color has-background"><code>['bitcoin', 'crypto', 'price', 'btc', 'nfts', 'ethereum', 'big', 'week', 'hit', 'bnb', 'swing', 'extreme', 'braced', 'cardano', 'solana', 'xrp', 'buy', 'get', 'think', 'like', 'usdt', 'nft', 'going', 'one', 'would', 'time', 'amp', 'long', 'thing', 'cryptocurrency', 'want', 'lot', 'money', 'world', 'see', 'exchange', 'people', 'bad', 'cryptonews', 'line', 'right', 'new', 'nothing', 'le', 'hour', 'fed', 'sat', 'look', 'miner', 'anything', 'mean', 'use', 'rate', 'forbes', 'change', 'mining', 'supply', 'chart', 'buying', 'medium', 'need', 'early', 'worst', 'value', 'billion', 'give', 'still', 'someone', 'know', 'around', 'find', 'make', 'ever', 'fiat', 'back', 'getting', 'wallet', 'network', 'chain', 'bottom', 'last', 'since', 'said', 'coin', 'red', 'twitter', 'attack', 'foo', 'missing', 'hard', 'matter', 'cryptocurrencies', 'today', 'min', 'side', 'started', 'beginning', 'imagine', 'blockchain', 'fee']</code></pre>
 <!-- /wp:code -->
 
 <!-- wp:heading {"textColor":"secondary"} -->
 <h2 class="has-secondary-color has-text-color" id="5-conclusion">5. Conclusion</h2>
 <!-- /wp:heading -->
 
-<p>Given the insights we have been inferencing using NLP we can see that there is a prevalent @sentiment_score regarding @@@project name.</p>
+<p>Given the insights we have been inferencing using NLP we can see that there is a prevalent positive opinion regarding Bitcoin tweets.</p>
